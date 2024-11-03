@@ -1,15 +1,19 @@
-# Jenkins CI/CD Pipeline for Flask Application
+# Jenkins CI/CD Pipeline for Flask Application 🚀
 
-This repository demonstrates a CI/CD pipeline using Jenkins to deploy a Flask application. The setup automates the environment setup, deployment, and testing of the Flask application on a Linux server using systemd and gunicorn. 
+This repository demonstrates a CI/CD pipeline using Jenkins to deploy a Flask application. The setup automates environment setup, deployment, and testing of the Flask application on a Linux server using `systemd` and `gunicorn`. 
 
-## Project Structure
+![Pipeline Overview](https://via.placeholder.com/800x200.png?text=Jenkins+Pipeline+Overview)  <!-- Replace with actual image link -->
 
-- **Jenkinsfile** - Pipeline script defining CI/CD stages.
-- **app.py** - Flask application with endpoints to display application information.
-- **myapp.service** - Systemd service file for running the Flask app with gunicorn.
-- **tests.py** - Test script for verifying Flask endpoints.
+## Project Structure 📁
 
-## Pipeline Overview
+| File              | Description                                                       |
+|-------------------|-------------------------------------------------------------------|
+| **Jenkinsfile**   | Pipeline script defining CI/CD stages.                            |
+| **app.py**        | Flask application with endpoints to display application information. |
+| **myapp.service** | Systemd service file for running the Flask app with gunicorn.     |
+| **tests.py**      | Test script for verifying Flask endpoints.                        |
+
+## Pipeline Overview 🛠️
 
 The Jenkins pipeline automates the following steps:
 1. **Environment Setup**: Installs Python, pip, and virtual environment. Sets up a virtual environment and installs required packages.
@@ -17,35 +21,40 @@ The Jenkins pipeline automates the following steps:
 3. **Start Gunicorn Service**: Starts the service for the Flask application via systemd.
 4. **Testing**: Executes tests on the Flask application using pytest.
 
-### Requirements
+![Pipeline Stages](https://via.placeholder.com/800x150.png?text=Jenkins+Pipeline+Stages)  <!-- Replace with actual image link -->
+
+### Requirements ✅
 
 - **Jenkins Worker Node** - Ensure you have a Jenkins node labeled `Jenkins-worker01` with SSH access and `sudo` privileges.
 - **Python** - Ensure Python 3.x is installed on the server.
 - **Network Access** - The application should be accessible on port `5000`.
 
-## Pipeline Stages in Jenkinsfile
+## Pipeline Stages in `Jenkinsfile` 📜
 
 ```groovy
 pipeline {
-    agent { label 'Jenkins-worker01' }
+    agent { label 'Jenkins-worker01' }  // Ensure this node exists
+
     environment {
-        APP_DIR = '/home/ubuntu/workspace/myapp'
+        APP_DIR = '/home/ubuntu/workspace/myapp'  // Path to the application directory
         SERVICE_FILE = '/etc/systemd/system/myapp.service'
-        VENV_PATH = "venv" 
+		VENV_PATH = "venv" 
     }
 
     stages {
+
         stage('Setup Environment') {
             steps {
+                // 
                 sh """
-                    echo 'Setting up Python environment and installing packages'
+                    echo 'Setup the Python environment and install packages'
                     sudo apt-get update
                     sudo apt install python3-pip -y
                     sudo apt install python3-virtualenv -y
                     cd ${APP_DIR}
                     python3 -m venv $VENV_PATH
                     sudo chown -R ubuntu:ubuntu ${APP_DIR}/venv
-                    ./$VENV_PATH/bin/pip install Flask gunicorn pytest requests
+                    ./$VENV_PATH/bin/pip install  Flask gunicorn pytest requests
                 """
             }
         }
@@ -53,7 +62,7 @@ pipeline {
         stage('Deploy Systemd Service') {
             steps {
                 sh """
-                    echo 'Deploying systemd service file'
+                    echo 'Copy the myapp.service file from the repo to the systemd directory'
                     sudo cp ${APP_DIR}/myapp.service ${SERVICE_FILE}
                     sudo systemctl daemon-reload
                     sudo systemctl enable myapp
@@ -64,16 +73,16 @@ pipeline {
         stage('Start Gunicorn Service') {
             steps {
                 sh """
-                    echo 'Starting Gunicorn service for the Flask app'
+                    echo "Start the Gunicorn service for the Flask app"
                     sudo systemctl start myapp && sudo systemctl status myapp
                 """
             }
         }
-        
-        stage('Testing') {
+		
+		stage('Testing') {
             steps {
                 sh """
-                    echo 'Running tests with pytest'
+                    echo "Doing Website testing"
                     ./$VENV_PATH/bin/pytest tests.py
                 """
             }
@@ -91,7 +100,7 @@ pipeline {
 }
 ```
 
-### Application Code (app.py)
+### Application Code (app.py) 🐍
 
 This Flask application provides two endpoints:
 - **/name** - Returns the name of the developer.
@@ -113,9 +122,9 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 ```
 
-### Systemd Service File (myapp.service)
+### Systemd Service File (myapp.service) 📝
 
-The systemd service file configures the application to run with gunicorn.
+This systemd service file configures the application to run with gunicorn.
 
 ```ini
 [Unit]
@@ -133,7 +142,7 @@ ExecStart=/home/ubuntu/workspace/myapp/venv/bin/gunicorn -b 0.0.0.0:5000 app:app
 WantedBy=multi-user.target
 ```
 
-### Testing (tests.py)
+### Testing (tests.py) ✅
 
 Tests for the application endpoints are defined in `tests.py`. These tests use `pytest` and `requests` to validate endpoint responses.
 
@@ -154,26 +163,28 @@ def test_get_version():
     assert response.text == 'v1.0.0.0'
 ```
 
-## Running the Pipeline
+## Running the Pipeline ▶️
 
 1. **Set Up Jenkins Job**: Create a Jenkins job and link it to this repository.
 2. **Run the Job**: Run the pipeline job to deploy the Flask application. Jenkins will automatically go through each stage and handle any errors according to the `post` conditions.
 
-## Monitoring
+## Monitoring 🖥️
 
-After deployment, you can monitor the application service:
+After deployment, monitor the application service with:
 ```bash
 sudo systemctl status myapp
 ```
 
-To view the application, access it at `http://<your_server_ip>:5000`.
+Access the application at `http://<your_server_ip>:5000`.
 
-## Troubleshooting
+![System Monitoring](https://via.placeholder.com/800x150.png?text=System+Monitoring+View)  <!-- Replace with actual image link -->
 
-- **Service Issues**: Check systemd logs for detailed error messages:
+## Troubleshooting 🔧
+
+- **Service Issues**: Check systemd logs for error messages:
     ```bash
     sudo journalctl -u myapp
     ```
 
-- **Network Issues**: Verify that the application is accessible on the specified port (5000 by default).
+- **Network Issues**: Verify the application is accessible on the specified port (5000 by default).
 
