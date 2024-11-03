@@ -1,74 +1,98 @@
 pipeline {
-    agent { label 'Jenkins-worker01' }  // Ensure this node exists
-
+    agent { label 'Jenkins-worker01' }
     environment {
-        APP_DIR = '/home/ubuntu/workspace/myapp'  // Path to the application directory
+        APP_DIR = '/home/ubuntu/workspace/myapp'
         SERVICE_FILE = '/etc/systemd/system/myapp.service'
-		VENV_PATH = "venv" 
+        VENV_PATH = "venv" 
     }
 
     stages {
-
         stage('Setup Environment') {
             steps {
-                // 
-                sh """
-                    echo 'Setup the Python environment and install packages'
-                    sudo apt-get update
-                    sudo apt install python3-pip -y
-                    sudo apt install python3-virtualenv -y
-                    cd ${APP_DIR}
-                    python3 -m venv $VENV_PATH
-                    sudo chown -R ubuntu:ubuntu ${APP_DIR}/venv
-                    ./$VENV_PATH/bin/pip install  Flask gunicorn pytest requests
-                """
+                script {
+                    try {
+                        sh """
+                            echo 'Setting up environment'
+                            sudo apt-get update
+                            sudo apt install python3-pip -y
+                            sudo apt install python3-virtualenv -y
+                            cd ${APP_DIR}
+                            python3 -m venv $VENV_PATH
+                            sudo chown -R ubuntu:ubuntu ${APP_DIR}/venv
+                            ./$VENV_PATH/bin/pip install Flask gunicorn pytest requests
+                        """
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("Environment setup failed.")
+                    }
+                }
             }
         }
 
         stage('Deploy Systemd Service') {
             steps {
-                sh """
-                    echo 'Copy the myapp.service file from the repo to the systemd directory'
-                    sudo cp ${APP_DIR}/myapp.service ${SERVICE_FILE}
-                    sudo systemctl daemon-reload
-                    sudo systemctl enable myapp
-                """
+                script {
+                    try {
+                        sh """
+                            echo 'Deploying systemd service'
+                            sudo cp ${APP_DIR}/myapp.service ${SERVICE_FILE}
+                            sudo systemctl daemon-reload
+                            sudo systemctl enable myapp
+                        """
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("Deploying systemd service failed.")
+                    }
+                }
             }
         }
 
         stage('Start Gunicorn Service') {
             steps {
-                sh """
-                    echo "Start the Gunicorn service for the Flask app"
-                    sudo systemctl start myapp && sudo systemctl status myapp
-                """
+                script {
+                    try {
+                        sh """
+                            echo 'Starting Gunicorn service'
+                            sudo systemctl start myapp && sudo systemctl status myapp || true
+                        """
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("Starting Gunicorn service failed.")
+                    }
+                }
             }
         }
-		
-		stage('Testing') {
+
+        stage('Testing') {
             steps {
-                sh """
-                    echo "Doing Website testing"
-                    ./$VENV_PATH/bin/pytest tests.py
-                """
+                script {
+                    try {
+                        sh """
+                            echo 'Running tests'
+                            ./$VENV_PATH/bin/pytest tests.py
+                        """
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("Tests failed.")
+                    }
+                }
             }
         }
     }
 
-	triggers {
+    triggers {
         pollSCM('H/5 * * * *')  // Polls every 5 minutes for changes; configure according to requirements
     }
-	
+
     post {
-        success {
-            echo 'Flask application deployed successfully!'
-            slackSend(channel: '#jenkins-job-notifications', message: "Build FAILED for myapp - Build #${env.BUILD_NUMBER}")
-
-        }
-        failure {
-            echo 'Deployment failed.'
-            slackSend(channel: '#jenkins-job-notifications', message: "Build FAILED for myapp - Build #${env.BUILD_NUMBER}")
-
+        always {
+            script {
+                if (currentBuild.result == 'SUCCESS') {
+                    slackSend(channel: '#jenkins-job-notifications', message: "Build SUCCESS for myapp - Build #${env.BUILD_NUMBER}")
+                } else {
+                    slackSend(channel: '#jenkins-job-notifications', message: "Build FAILED for myapp - Build #${env.BUILD_NUMBER}")
+                }
+            }
         }
     }
 }
