@@ -20,8 +20,7 @@ pipeline {
                     cd ${APP_DIR}
                     python3 -m venv $VENV_PATH
                     sudo chown -R ubuntu:ubuntu ${APP_DIR}/venv
-                    pwd
-                    ./$VENV_PATH/bin/pip install  Flask gunicorn pytest
+                    ./$VENV_PATH/bin/pip install  Flask gunicorn pytest requests
                 """
             }
         }
