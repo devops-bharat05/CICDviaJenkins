@@ -62,12 +62,12 @@ pipeline {
     post {
         success {
             echo 'Flask application deployed successfully!'
-            slackSend(channel: 'jenkinsnotifi-zko1754', message: "Build SUCCESS for ${env.JOB_NAME} - ${env.BUILD_NUMBER}")
+            slackSend(channel: '#jenkins-job-notifications', message: "Build FAILED for myapp - Build #${env.BUILD_NUMBER}")
 
         }
         failure {
             echo 'Deployment failed.'
-            slackSend(channel: 'jenkinsnotifi-zko1754', message: "Build FAILED for ${env.JOB_NAME} - ${env.BUILD_NUMBER}")
+            slackSend(channel: '#jenkins-job-notifications', message: "Build FAILED for myapp - Build #${env.BUILD_NUMBER}")
 
         }
     }
