@@ -55,12 +55,24 @@ pipeline {
         }
     }
 
+	triggers {
+        pollSCM('H/5 * * * *')  // Polls every 5 minutes for changes; configure according to requirements
+    }
+	
     post {
         success {
             echo 'Flask application deployed successfully!'
+            slackSend(channel: 'jenkinsnotifi-zko1754', message: "Build SUCCESS for ${env.JOB_NAME} - ${env.BUILD_NUMBER}")
+            mail to: 'bharat-jenkins@outlook.com',
+                 subject: "SUCCESS: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
+                 body: "The build was successful."
         }
         failure {
             echo 'Deployment failed.'
+            slackSend(channel: 'jenkinsnotifi-zko1754', message: "Build FAILED for ${env.JOB_NAME} - ${env.BUILD_NUMBER}")
+            mail to: 'bharat-jenkins@outlook.com',
+                 subject: "FAILURE: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
+                 body: "The build failed. Please check Jenkins for details."
         }
     }
 }
