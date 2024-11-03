@@ -177,7 +177,8 @@ sudo systemctl status myapp
 
 Access the application at `http://<your_server_ip>:5000`.
 
-![System Monitoring](https://via.placeholder.com/800x150.png?text=System+Monitoring+View)  <!-- Replace with actual image link -->
+![Alt text](images/websiteurl01.png)
+![Alt text](images/websiteurl02.png)<!-- Replace with actual image link -->
 
 ## Troubleshooting 🔧
 
