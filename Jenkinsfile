@@ -4,6 +4,7 @@ pipeline {
     environment {
         APP_DIR = '/home/ubuntu/workspace/myapp'  // Path to the application directory
         SERVICE_FILE = '/etc/systemd/system/myapp.service'
+		VENV_PATH = "venv" 
     }
 
     stages {
@@ -17,12 +18,10 @@ pipeline {
                     sudo apt install python3-pip -y
                     sudo apt install python3-virtualenv -y
                     cd ${APP_DIR}
-                    sudo virtualenv venv
+                    python3 -m venv $VENV_PATH
                     sudo chown -R ubuntu:ubuntu ${APP_DIR}/venv
                     pwd
-                    source venv/bin/activate 
-                    pip install Flask gunicorn
-                    pip install gunicorn
+                    ./$VENV_PATH/bin/pip install  Flask gunicorn
                 """
             }
         }
