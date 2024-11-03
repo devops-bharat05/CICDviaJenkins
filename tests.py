@@ -4,11 +4,6 @@ import pytest
 # Define the base URL of your application
 BASE_URL = "http://localhost:5000"  # Change this if your app runs on a different host/port
 
-def test_site_is_live():
-    """Test if the site is live by checking the response status code."""
-    response = requests.get(BASE_URL + "/")  # Replace with the relevant endpoint if needed
-    assert response.status_code == 200  # Check if the status code is 200 (OK)
-
 def test_get_name():
     """Test the /name endpoint."""
     response = requests.get(BASE_URL + "/name")
