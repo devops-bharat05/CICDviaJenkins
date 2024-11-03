@@ -174,7 +174,7 @@ After deployment, monitor the application service with:
 ```bash
 sudo systemctl status myapp
 ```
-![Alt text](myappservice.png)
+![Alt text](images/myappservice.png)
 
 Access the application at `http://<your_server_ip>:5000`.
 
