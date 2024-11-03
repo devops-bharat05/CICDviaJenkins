@@ -21,7 +21,7 @@ The Jenkins pipeline automates the following steps:
 3. **Start Gunicorn Service**: Starts the service for the Flask application via systemd.
 4. **Testing**: Executes tests on the Flask application using pytest.
 
-![Pipeline Stages](https://via.placeholder.com/800x150.png?text=Jenkins+Pipeline+Stages)  <!-- Replace with actual image link -->
+![Alt text](images/build_pass.png) <!-- Replace with actual image link -->
 
 ### Requirements ✅
 
