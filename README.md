@@ -23,7 +23,7 @@ The Jenkins pipeline automates the following steps:
 5. **Triggers**: Configured to automatically trigger a new build on code changes.
 6. **Notifications**: Sends notifications to Slack upon build success or failure.
 
-![Alt text](images/build_pass.png) <!-- Replace with actual image link -->
+![Alt text](images/build_pass02.png) <!-- Replace with actual image link -->
 
 ### Requirements ✅
 
@@ -225,15 +225,20 @@ def test_get_version():
 The pipeline is set to automatically trigger on updates to the GitHub repository:
 
 - **GitHub Webhook**: This is configured in GitHub, so Jenkins triggers a new build whenever there’s a push event.
+
 ![Alt text](images/github_webhooks.png)
+
 - **Polling SCM**: Additionally, the `pollSCM('H/5 * * * *')` configuration polls for changes every 5 minutes to ensure no updates are missed.
 
 ## Notifications 📢
+
 ![Alt text](images/jenkins_slack_config.png)
+
 Slack notifications are configured to alert the `#jenkins-job-notifications` channel:
 
 - **Success Message**: Notifies the channel when a build completes successfully.
 - **Failure Message**: Alerts the channel if any step in the build process fails.
+
 ![Alt text](images/slack_notification.png) 
 
 
