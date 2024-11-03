@@ -19,6 +19,7 @@ pipeline {
                     cd ${APP_DIR}
                     sudo virtualenv venv
                     sudo chown -R ubuntu:ubuntu ${APP_DIR}/venv
+                    pwd
                     source venv/bin/activate 
                     pip install Flask gunicorn
                 """
