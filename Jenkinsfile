@@ -22,6 +22,7 @@ pipeline {
                     pwd
                     source venv/bin/activate 
                     pip install Flask gunicorn
+                    pip install gunicorn
                 """
             }
         }
