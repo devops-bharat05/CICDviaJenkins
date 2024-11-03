@@ -2,7 +2,7 @@
 
 This repository demonstrates a CI/CD pipeline using Jenkins to deploy a Flask application. The setup automates environment setup, deployment, and testing of the Flask application on a Linux server using `systemd` and `gunicorn`. 
 
-![Pipeline Overview](https://via.placeholder.com/800x200.png?text=Jenkins+Pipeline+Overview)  <!-- Replace with actual image link -->
+![Alt text](images/Jenkins_image.png)  <!-- Replace with actual image link -->
 
 ## Project Structure 📁
 
