@@ -10,8 +10,9 @@ pipeline {
 
         stage('Setup Environment') {
             steps {
-                // Setup the Python environment and install packages
+                // 
                 sh """
+                    echo 'Setup the Python environment and install packages'
                     sudo apt-get update
                     sudo apt install python3-pip -y
                     sudo apt install python3-virtualenv -y
@@ -26,8 +27,8 @@ pipeline {
 
         stage('Deploy Systemd Service') {
             steps {
-                // Copy the myapp.service file from the repo to the systemd directory
                 sh """
+                    echo 'Copy the myapp.service file from the repo to the systemd directory'
                     sudo cp ${APP_DIR}/myapp.service ${SERVICE_FILE}
                     sudo systemctl daemon-reload
                     sudo systemctl enable myapp
@@ -37,8 +38,8 @@ pipeline {
 
         stage('Start Gunicorn Service') {
             steps {
-                // Start the Gunicorn service for the Flask app
                 sh """
+                    echo "Start the Gunicorn service for the Flask app"
                     sudo systemctl start myapp && sudo systemctl status myapp
                 """
             }
