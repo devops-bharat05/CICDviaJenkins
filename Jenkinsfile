@@ -49,7 +49,7 @@ pipeline {
             steps {
                 sh """
                     echo "Doing Website testing"
-                    sh './$VENV_PATH/bin/pytest tests/'
+                    sh './$VENV_PATH/bin/pytest tests.py'
                 """
             }
         }
