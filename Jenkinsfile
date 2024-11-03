@@ -21,7 +21,7 @@ pipeline {
                     python3 -m venv $VENV_PATH
                     sudo chown -R ubuntu:ubuntu ${APP_DIR}/venv
                     pwd
-                    ./$VENV_PATH/bin/pip install  Flask gunicorn
+                    ./$VENV_PATH/bin/pip install  Flask gunicorn pytest
                 """
             }
         }
@@ -42,6 +42,15 @@ pipeline {
                 sh """
                     echo "Start the Gunicorn service for the Flask app"
                     sudo systemctl start myapp && sudo systemctl status myapp
+                """
+            }
+        }
+		
+		stage('Testing') {
+            steps {
+                sh """
+                    echo "Doing Website testing"
+                    sh './$VENV_PATH/bin/pytest tests/'
                 """
             }
         }
