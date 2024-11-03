@@ -15,11 +15,11 @@ pipeline {
                     sudo apt-get update
                     sudo apt install python3-pip -y
                     sudo apt install python3-virtualenv -y
-                    mkdir -p ${APP_DIR}  // Ensure the application directory exists
                     cd ${APP_DIR}
                     sudo virtualenv venv
                     sudo chown -R ubuntu:ubuntu ${APP_DIR}/venv
-                    source venv/bin/activate && pip install Flask gunicorn
+                    source venv/bin/activate 
+                    pip install Flask gunicorn
                 """
             }
         }
