@@ -2,17 +2,11 @@ pipeline {
     agent { label 'Jenkins-worker01' }  // Ensure this node exists
 
     environment {
-        APP_DIR = '/home/ubuntu/myapp'  // Path to the application directory
+        APP_DIR = '/home/ubuntu/workspace/myapp'  // Path to the application directory
         SERVICE_FILE = '/etc/systemd/system/myapp.service'
     }
 
     stages {
-        stage('Clone Repository') {
-            steps {
-                // Clone the repository containing your Flask app and service file
-                git 'https://github.com/devops-bharat05/myapp.git'
-            }
-        }
 
         stage('Setup Environment') {
             steps {
